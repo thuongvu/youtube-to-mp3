@@ -1,12 +1,15 @@
 "use strict"
 
+var url = process.argv[2];
+
 var fs = require('fs');
 var ytdl = require('ytdl-core');
 var _ = require('lodash');
 var ffmpeg = require('fluent-ffmpeg');
 var ProgressBar = require('progress');
 
-var getHighestBitrate = function(formats) {
+
+var getHighestBitrate = (formats) => {
 	let highest = _.chain(formats)
 		.filter(format => {
 			return format.audioBitrate !== null;
@@ -24,29 +27,10 @@ var getHighestBitrate = function(formats) {
 	}
 }
 
-ytdl.getInfo('https://www.youtube.com/watch?v=e-ORhEE9VVg', (err, info) => {
-	if (err) throw err;
-	let format = getHighestBitrate(info.formats);
-	let readableStream = ytdl.downloadFromInfo(info, format);
-	let bar;
-	readableStream.on('response', (res) => {
-		bar = new ProgressBar('Downloaded :percent: [:bar] Elapsed: :elapsed  ETA: :etas', {
-			    complete: '=',
-			    incomplete: ' ',
-			    width: 30,
-			    total: parseInt(res.headers['content-length'], 10)
-			  });
-	});
-
-	readableStream.on('data', (data) => {
-		bar.tick(data.length)
-	})
-
-	let bitrate = format.audioBitrate || 128;
-	encodeFile(readableStream, bitrate, info.title);
-});
-
-var encodeFile = (stream, bitrate, fileName) => {
+var encodeMusicFile = (stream, bitrate, fileName) => {
+	if (!bitrate) {
+		bitrate = 128;
+	}
 	return ffmpeg(stream)
 		.noVideo()
 		.audioCodec('libmp3lame')
@@ -58,3 +42,26 @@ var encodeFile = (stream, bitrate, fileName) => {
 		end: true
 	});
 }
+
+var createProgressBar = (stream) => {
+	let bar;
+
+	stream.on('response', (res) => {
+		bar = new ProgressBar('Downloaded :percent: [:bar] Elapsed: :elapsed  ETA: :etas', {
+		complete: '=',
+		incomplete: ' ',
+		width: 30,
+		total: parseInt(res.headers['content-length'], 10)
+	});
+
+	stream.on('data', (data) => {
+		bar.tick(data.length)
+	});
+}
+
+ytdl.getInfo(url, (err, info) => {
+	if (err) throw err;
+	let readableStream = ytdl.downloadFromInfo(info, format);
+	encodeMusicFile(readableStream, format.audioBitrate, info.title);
+	createProgressBar(readableStream);
+});
