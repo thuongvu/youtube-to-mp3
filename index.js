@@ -7,21 +7,7 @@ var ytdl = require('ytdl-core');
 var _ = require('lodash');
 var ffmpeg = require('fluent-ffmpeg');
 var ProgressBar = require('progress');
-
-
-var getHighestBitrate = (formats) => {
-	let highest = _.chain(formats)
-		.filter(format => {
-			return format.audioBitrate !== null;
-		})
-		.sortBy(format => {
-			return format.audioBitrate;
-		})
-		.last()
-		.value();
-
-	return highest ? highest : _.first(formats);
-}
+var getHighestBitrate = require('./lib/getHighestBitrate');
 
 var encodeMusicFile = (stream, bitrate) => {
 	if (!bitrate) {

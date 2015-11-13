@@ -5,17 +5,22 @@
   "keywords": [],
   "author": "thuongvu <thuongvuho@gmail.com>",
   "license": "MIT",
-  "repository": "",
+  "repository": "git@github.com:thuongvu/youtube-to-mp3.git",
   "bugs": {
-    "url": ""
+    "url": "https://github.com/thuongvu/youtube-to-mp3/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/thuongvu/youtube-to-mp3",
   "dependencies": {
     "fluent-ffmpeg": "^2.0.1",
     "lodash": "^3.10.1",
     "progress": "^1.1.8",
     "ytdl-core": ""
   },
-  "devDependencies": {},
-  "scripts": {}
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  },
+  "scripts": {
+    "test": "mocha -R spec test/*.spec.js"
+  },
+  "main": "index.js"
 }
