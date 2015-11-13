@@ -20,14 +20,10 @@ var getHighestBitrate = (formats) => {
 		.last()
 		.value();
 
-	if (highest) {
-		return highest;
-	} else {
-		return _.first(formats);
-	}
+	return highest ? highest : _.first(formats);
 }
 
-var encodeMusicFile = (stream, bitrate, fileName) => {
+var encodeMusicFile = (stream, bitrate) => {
 	if (!bitrate) {
 		bitrate = 128;
 	}
@@ -37,10 +33,7 @@ var encodeMusicFile = (stream, bitrate, fileName) => {
 		.audioBitrate(bitrate)
 		.format('mp3')
 		.on('error', (err) => console.error(err))
-		.on('end', () => console.log(`Finished encoding ${fileName}.mp3`))
-		.pipe(fs.createWriteStream(`${fileName}.mp3`), {
-		end: true
-	});
+		.on('end', () => console.log('Finished encoding!'))
 }
 
 var createProgressBar = (stream) => {
@@ -48,10 +41,11 @@ var createProgressBar = (stream) => {
 
 	stream.on('response', (res) => {
 		bar = new ProgressBar('Downloaded :percent: [:bar] Elapsed: :elapsed  ETA: :etas', {
-		complete: '=',
-		incomplete: ' ',
-		width: 30,
-		total: parseInt(res.headers['content-length'], 10)
+			complete: '=',
+			incomplete: ' ',
+			width: 30,
+			total: parseInt(res.headers['content-length'], 10)
+		})
 	});
 
 	stream.on('data', (data) => {
@@ -59,9 +53,12 @@ var createProgressBar = (stream) => {
 	});
 }
 
-ytdl.getInfo(url, (err, info) => {
+module.exports = ytdl.getInfo(url, (err, info) => {
 	if (err) throw err;
+	let format = getHighestBitrate(info.formats);
 	let readableStream = ytdl.downloadFromInfo(info, format);
-	encodeMusicFile(readableStream, format.audioBitrate, info.title);
+
 	createProgressBar(readableStream);
+	encodeMusicFile(readableStream, format.audioBitrate)
+		.pipe(process.stdout);
 });
