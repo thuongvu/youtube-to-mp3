@@ -1,5 +1,5 @@
 {
-  "name": "ytToMp3",
+  "name": "yttomp3",
   "version": "0.1.0",
   "description": "A CLI tool that converts a youtube video to an mp3 file using node streams",
   "keywords": [
