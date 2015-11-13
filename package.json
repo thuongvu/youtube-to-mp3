@@ -5,8 +5,8 @@
   "keywords": [
     "youtube",
     "cli",
-    "download"
-    "mp3"
+    "download",
+    "mp3",
     "ffmpeg"
   ],
   "author": "thuongvu <thuongvuho@gmail.com>",
