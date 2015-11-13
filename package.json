@@ -1,8 +1,14 @@
 {
-  "name": "",
-  "version": "0.0.0",
-  "description": "",
-  "keywords": [],
+  "name": "youtube-to-mp3",
+  "version": "0.1.0",
+  "description": "A CLI tool that converts a youtube video to an mp3 file using node streams",
+  "keywords": [
+    "youtube",
+    "cli",
+    "download"
+    "mp3"
+    "ffmpeg"
+  ],
   "author": "thuongvu <thuongvuho@gmail.com>",
   "license": "MIT",
   "repository": "git@github.com:thuongvu/youtube-to-mp3.git",
@@ -14,7 +20,7 @@
     "fluent-ffmpeg": "^2.0.1",
     "lodash": "^3.10.1",
     "progress": "^1.1.8",
-    "ytdl-core": ""
+    "ytdl-core": "latest"
   },
   "devDependencies": {
     "mocha": "^2.3.3"
